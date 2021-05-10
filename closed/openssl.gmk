@@ -1,5 +1,5 @@
 # ===========================================================================
-# (c) Copyright IBM Corp. 2018, 2019 All Rights Reserved
+# (c) Copyright IBM Corp. 2018, 2021 All Rights Reserved
 # ===========================================================================
 # This code is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2 only, as
@@ -27,7 +27,7 @@ endif
 include $(SPEC)
 
 # config command guess the operating system and Configure openssl accordignly.
-# However, on some platforms (like AIX, Windows) it is essential to configure 
+# However, on some platforms (like AIX, Windows) it is essential to configure
 # with one of the platform list provided by command ./Configure LIST command
 #     For AIX PPC64, it is aix64-cc
 #     For Linux ppc64le, it is linux-ppc64le

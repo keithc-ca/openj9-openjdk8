@@ -25,7 +25,7 @@
 
 /*
  * ===========================================================================
- * (c) Copyright IBM Corp. 2018, 2019 All Rights Reserved
+ * (c) Copyright IBM Corp. 2018, 2021 All Rights Reserved
  * ===========================================================================
  */
 
@@ -87,7 +87,7 @@ final class NativeGaloisCounterMode extends FeedbackCipher {
     // called, e.g. after cipher key k is set, and STAY UNCHANGED
     private byte[] subkeyH = null;
     private byte[] preCounterBlock = null;
-    
+
     // length of total data, i.e. len(C)
     private int processed = 0;
 
@@ -211,7 +211,6 @@ final class NativeGaloisCounterMode extends FeedbackCipher {
      * @return the name of the feedback mechanism
      */
     String getFeedback() {
-
         return "GCM";
     }
 
@@ -391,8 +390,6 @@ final class NativeGaloisCounterMode extends FeedbackCipher {
         }
     }
 
-
-
     /**
      * Performs encryption operation.
      *
@@ -410,7 +407,6 @@ final class NativeGaloisCounterMode extends FeedbackCipher {
      * @return the number of bytes placed into the <code>out</code> buffer
      */
     int encrypt(byte[] in, int inOfs, int len, byte[] out, int outOfs) {
-
         checkDataLength(ibuffer_enc.size(), len);
 
         if ((len % blockSize) != 0) {
@@ -565,13 +561,11 @@ final class NativeGaloisCounterMode extends FeedbackCipher {
             throw new ProviderException("Error in Native GaloisCounterMode");
         }
 
-
         return ret;
     }
 
     // return tag length in bytes
     int getTagLen() {
-
         return this.tagLenBytes;
     }
 

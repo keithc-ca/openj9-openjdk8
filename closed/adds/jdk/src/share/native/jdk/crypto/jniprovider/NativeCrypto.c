@@ -2,7 +2,6 @@
  * ===========================================================================
  * (c) Copyright IBM Corp. 2018, 2021 All Rights Reserved
  * ===========================================================================
- *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
  * published by the Free Software Foundation.
@@ -18,7 +17,6 @@
  *
  * You should have received a copy of the GNU General Public License version
  * 2 along with this work; if not, see <http://www.gnu.org/licenses/>.
- *
  * ===========================================================================
  */
 
@@ -262,7 +260,7 @@ JNIEXPORT jint JNICALL Java_jdk_crypto_jniprovider_NativeCrypto_loadCrypto
     OSSL_error_string = (OSSL_error_string_t*)find_crypto_symbol(crypto_library, "ERR_error_string");
     OSSL_get_error = (OSSL_get_error_t*)find_crypto_symbol(crypto_library, "ERR_get_error");
 
-	/* Load Threading routines for OpenSSL 1.0.2 */
+    /* Load Threading routines for OpenSSL 1.0.2 */
     if (0 == ossl_ver) {
         OSSL_CRYPTO_num_locks = (OSSL_CRYPTO_num_locks_t*)find_crypto_symbol(crypto_library, "CRYPTO_num_locks");
         OSSL_CRYPTO_THREADID_set_numeric = (OSSL_CRYPTO_THREADID_set_numeric_t*)find_crypto_symbol(crypto_library, "CRYPTO_THREADID_set_numeric");
@@ -1122,7 +1120,6 @@ JNIEXPORT jint JNICALL Java_jdk_crypto_jniprovider_NativeCrypto_GCMEncrypt
         return -1;
     }
 
-
     (*OSSL_CIPHER_CTX_free)(ctx);
 
     (*env)->ReleasePrimitiveArrayCritical(env, key, keyNative, JNI_ABORT);
@@ -1311,7 +1308,6 @@ JNIEXPORT jint JNICALL Java_jdk_crypto_jniprovider_NativeCrypto_GCMDecrypt
         }
         return -1;
     }
-
 
     ret = (*OSSL_DecryptFinal)(ctx, outputNative + outOffset + len, &len);
 
@@ -1758,9 +1754,9 @@ typedef struct rsa_st102 {
     char *bignum_data;
     BN_BLINDING *blinding;
     BN_BLINDING *mt_blinding;
-}OSSL102_RSA;
+} OSSL102_RSA;
 
-/* 
+/*
  * Compatibility Layer for RSA algorithim using OpenSSL 1.0.2
  * https://wiki.openssl.org/index.php/OpenSSL_1.1.0_Changes#Compatibility_Layer
  */
@@ -1842,4 +1838,3 @@ int OSSL102_RSA_set0_crt_params(RSA *r2, BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqm
 
     return 1;
 }
-

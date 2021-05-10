@@ -1,8 +1,7 @@
 /*
  * ===========================================================================
- * (c) Copyright IBM Corp. 2018, 2019 All Rights Reserved
+ * (c) Copyright IBM Corp. 2018, 2021 All Rights Reserved
  * ===========================================================================
- *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
  * published by the Free Software Foundation.
@@ -18,7 +17,6 @@
  *
  * You should have received a copy of the GNU General Public License version
  * 2 along with this work; if not, see <http://www.gnu.org/licenses/>.
- *
  * ===========================================================================
  */
 
@@ -36,31 +34,29 @@ public class NativeCrypto {
 
     private static final boolean loaded = AccessController.doPrivileged(
             (PrivilegedAction<Boolean>) () -> {
-            Boolean isLoaded = Boolean.FALSE;
-            try {
-                System.loadLibrary("jncrypto"); // check for native library
-                // load OpenSSL crypto library dynamically.
-                if (loadCrypto() == 0) {
-                    isLoaded = Boolean.TRUE;
+                Boolean isLoaded = Boolean.FALSE;
+                try {
+                    System.loadLibrary("jncrypto"); // check for native library
+                    // load OpenSSL crypto library dynamically.
+                    if (loadCrypto() == 0) {
+                        isLoaded = Boolean.TRUE;
+                    }
+                } catch (UnsatisfiedLinkError usle) {
+                    // Return that isLoaded is false (default set above)
                 }
-            } catch (UnsatisfiedLinkError usle) { 
-                // Return that isLoaded is false (default set above)
-            }
-            
-            return isLoaded;
-        }).booleanValue();
-    
+                return isLoaded;
+            }).booleanValue();
+
     public static final boolean isLoaded() {
         return loaded;
     }
-    
+
     private NativeCrypto() {
         //empty
     }
 
     @CallerSensitive
     public static NativeCrypto getNativeCrypto() {
-
         ClassLoader callerClassLoader = Reflection.getCallerClass().getClassLoader();
 
         if ((callerClassLoader != null) && (callerClassLoader != VM.getVMLangAccess().getExtClassLoader())) {
