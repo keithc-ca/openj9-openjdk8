@@ -1,10 +1,9 @@
 # ===========================================================================
-# (c) Copyright IBM Corp. 2017, 2020 All Rights Reserved
+# (c) Copyright IBM Corp. 2017, 2021 All Rights Reserved
 # ===========================================================================
-# 
 # This code is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2 only, as
-# published by the Free Software Foundation.  
+# published by the Free Software Foundation.
 #
 # IBM designates this particular file as subject to the "Classpath" exception
 # as provided by IBM in the LICENSE file that accompanied this code.
@@ -17,16 +16,14 @@
 #
 # You should have received a copy of the GNU General Public License version
 # 2 along with this work; if not, see <http://www.gnu.org/licenses/>.
-# 
 # ===========================================================================
 
-$(JDK_OUTPUTDIR)/classes/com/ibm/oti/util/ExternalMessages.properties: $(J9JCL_SOURCES_DIR)/jdk/src/share/classes/com/ibm/oti/util/ExternalMessages.properties
+$(JDK_OUTPUTDIR)/classes/com/ibm/oti/util/ExternalMessages.properties : $(J9JCL_SOURCES_DIR)/jdk/src/share/classes/com/ibm/oti/util/ExternalMessages.properties
 	$(call install-file)
 
 COPY_FILES += $(JDK_OUTPUTDIR)/classes/com/ibm/oti/util/ExternalMessages.properties
 
-# Copy ibmjvmti.h
-$(JDK_OUTPUTDIR)/include/ibmjvmti.h: $(SRC_ROOT)/openj9/runtime/include/ibmjvmti.h
+$(INCLUDEDIR)/ibmjvmti.h : $(OPENJ9_TOPDIR)/runtime/include/ibmjvmti.h
 	$(call install-file)
 
-COPY_FILES += $(JDK_OUTPUTDIR)/include/ibmjvmti.h
+COPY_FILES += $(INCLUDEDIR)/ibmjvmti.h
