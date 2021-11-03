@@ -1,5 +1,5 @@
 # ===========================================================================
-# (c) Copyright IBM Corp. 2020, 2020 All Rights Reserved
+# (c) Copyright IBM Corp. 2020, 2021 All Rights Reserved
 # ===========================================================================
 # This code is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2 only, as
@@ -34,6 +34,8 @@ else ifeq (macosx,$(OPENJDK_TARGET_OS))
   openj9_debuginfo_filter = $(strip $(foreach path, $1, $(if $(findstring .dSYM/,$(path)),$(path))))
 else ifeq (windows,$(OPENJDK_TARGET_OS))
   openj9_debuginfo_filter = $(filter %.map %.pdb, $1)
+else ifeq (zos,$(OPENJDK_TARGET_OS))
+  openj9_debuginfo_filter = $(filter %.dbg, $1)
 else
   openj9_debuginfo_filter = $(filter %.debuginfo, $1)
 endif
