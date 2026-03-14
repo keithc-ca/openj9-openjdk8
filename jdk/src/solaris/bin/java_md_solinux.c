@@ -25,7 +25,7 @@
 
 /*
  * ===========================================================================
- * (c) Copyright IBM Corp. 2020, 2024 All Rights Reserved
+ * (c) Copyright IBM Corp. 2020, 2026 All Rights Reserved
  * ===========================================================================
  */
 
@@ -387,13 +387,13 @@ CreateExecutionEnvironment(int *pargc, char ***pargv,
                                            asked for? Current model is
                                            fine unless another model
                                            is asked for */
-#ifdef AIX
+#if defined(AIX)
     const char *mallocOptionsName = "MALLOCOPTIONS";
     const char *mallocOptionsValue = "multiheap,considersize";
     if (setenv(mallocOptionsName, mallocOptionsValue, 0) != 0) {
         fprintf(stderr, "setenv('MALLOCOPTIONS=multiheap,considersize') failed: performance may be affected\n");
     }
-#endif
+#endif /* defined(AIX) */
 #ifdef SETENV_REQUIRED
       jboolean mustsetenv = JNI_FALSE;
       char *runpath     = NULL; /* existing effective LD_LIBRARY_PATH setting */
@@ -559,16 +559,21 @@ CreateExecutionEnvironment(int *pargc, char ***pargv,
              * any.
              */
 
-#ifdef AIX
+#if defined(AIX)
         int aixargc = *pargc - 1; // skip the launcher name
         char **aixargv = *pargv + 1;
         const char *aixarg = NULL;
+        jboolean setLDR_CNTRL = JNI_TRUE;
         jboolean useZlibNX = JNI_FALSE;
         while (aixargc > 0 && *(aixarg = *aixargv) == '-') {
             if (JLI_StrCmp(aixarg, "-XX:+UseZlibNX") == 0) {
                 useZlibNX = JNI_TRUE;
             } else if (JLI_StrCmp(aixarg, "-XX:-UseZlibNX") == 0) {
                 useZlibNX = JNI_FALSE;
+            } else if (JLI_StrCmp(aixarg, "-XX:+UseMediumPageSize") == 0) {
+                setLDR_CNTRL = JNI_TRUE;
+            } else if (JLI_StrCmp(aixarg, "-XX:-UseMediumPageSize") == 0) {
+                setLDR_CNTRL = JNI_FALSE;
             }
             aixargc--;
             aixargv++;
@@ -580,7 +585,17 @@ CreateExecutionEnvironment(int *pargc, char ***pargv,
                 power_9_andup() ? "TRUE" : "FALSE",
                 power_nx_gzip() ? "TRUE" : "FALSE");
         }
-#endif
+        if (setLDR_CNTRL) {
+            const char *ldrCntrlName = "LDR_CNTRL";
+            const char *ldrCntrlValue = "TEXTPSIZE=64K@DATAPSIZE=64K@STACKPSIZE=64K@SHMPSIZE=64K";
+            if (setenv(ldrCntrlName, ldrCntrlValue, 0) != 0) {
+                fprintf(stderr, "setenv('%s=%s') failed: performance may be affected\n",
+                        ldrCntrlName, ldrCntrlValue);
+            } else if (JLI_IsTraceLauncher()) {
+                printf("Set %s=%s\n", ldrCntrlName, ldrCntrlValue);
+            }
+        }
+#endif  /* defined(AIX) */
 
 #ifdef __solaris__
             /*
@@ -653,12 +668,12 @@ CreateExecutionEnvironment(int *pargc, char ***pargv,
             jvmpath = JLI_StringDup(jvmpath);
             size_t new_runpath_size = ((runpath != NULL) ? JLI_StrLen(runpath) : 0) +
                     2 * JLI_StrLen(jrepath) + 2 * JLI_StrLen(arch) +
-#ifdef AIX
+#if defined(AIX)
                     /* On AIX we additionally need 'jli' in the path because ld doesn't support $ORIGIN. */
                     JLI_StrLen(jrepath) + JLI_StrLen(arch) + JLI_StrLen("/lib//jli:") +
                     /* On AIX P9 or newer with NX accelerator enabled, add the accelerated zlibNX to LIBPATH. */
                     (useZlibNX ? JLI_StrLen(":" ZLIBNX_PATH) : 0) +
-#endif
+#endif /* defined(AIX) */
                     JLI_StrLen(jvmpath) + 52;
             new_runpath = JLI_MemAlloc(new_runpath_size);
             newpath = new_runpath + JLI_StrLen(LD_LIBRARY_PATH "=");
@@ -676,13 +691,13 @@ CreateExecutionEnvironment(int *pargc, char ***pargv,
                 snprintf(new_runpath, new_runpath_size, LD_LIBRARY_PATH "="
                         "%s:"
                         "%s/lib/%s:"
-#ifdef AIX
+#if defined(AIX)
                         "%s/lib/%s/jli:" /* Needed on AIX because ld doesn't support $ORIGIN. */
-#endif
+#endif /* defined(AIX) */
                         "%s/../lib/%s"
-#ifdef AIX
+#if defined(AIX)
                         "%s" /* For zlibNX on eligible AIX systems */
-#endif
+#endif /* defined(AIX) */
                         ,
                         jvmpath,
 #ifdef DUAL_MODE
@@ -690,14 +705,14 @@ CreateExecutionEnvironment(int *pargc, char ***pargv,
                         jrepath, GetArchPath(wanted)
 #else /* !DUAL_MODE */
                         jrepath, arch,
-#ifdef AIX
+#if defined(AIX)
                         jrepath, arch,
-#endif
+#endif /* defined(AIX) */
                         jrepath, arch
 #endif /* DUAL_MODE */
-#ifdef AIX
+#if defined(AIX)
                         , (useZlibNX ? (":" ZLIBNX_PATH) : "")
-#endif
+#endif /* defined(AIX) */
                         );
 
 
