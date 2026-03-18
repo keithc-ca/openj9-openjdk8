@@ -21,6 +21,12 @@
  * questions.
  */
 
+/*
+ * ===========================================================================
+ * (c) Copyright IBM Corp. 2026, 2026 All Rights Reserved
+ * ===========================================================================
+ */
+
 import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.security.Security;
@@ -34,7 +40,7 @@ import java.util.Date;
  * @bug 8369282
  * @summary Check that TLS Server certificates chaining back to distrusted
  *          Chunghwa root are invalid
- * @library /test/lib
+ * @library /lib/security
  * @modules java.base/sun.security.validator
  * @run main/othervm Chunghwa after policyOn invalid
  * @run main/othervm Chunghwa after policyOff valid
